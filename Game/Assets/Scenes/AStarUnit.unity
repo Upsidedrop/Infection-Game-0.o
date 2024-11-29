@@ -679,9 +679,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unwalkableMask:
     serializedVersion: 2
-    m_Bits: 0
-  gridWorldSize: {x: 0, y: 0}
-  nodeRadius: 0
+    m_Bits: 128
+  gridWorldSize: {x: 50, y: 50}
+  nodeRadius: 1
 --- !u!1 &1022245814
 GameObject:
   m_ObjectHideFlags: 0

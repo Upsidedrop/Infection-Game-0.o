@@ -1,6 +1,7 @@
+using Unity.Mathematics;
 using UnityEngine;
 
-public class Grid : MonoBehaviour
+public class NodeMap : MonoBehaviour
 {
     public LayerMask unwalkableMask;
     public Vector2 gridWorldSize;
@@ -29,6 +30,16 @@ public class Grid : MonoBehaviour
                 grid[x,y] = new Node(walkable, worldPos);
             }
         }
+    }
+
+    public Node NodeFromWorldPoint(Vector3 worldPostition){
+        float percentX = (worldPostition.x + gridWorldSize.x / 2) / gridWorldSize.x;
+        float percentY = (worldPostition.z + gridWorldSize.y / 2) / gridWorldSize.y;
+        percentX = Mathf.Clamp01(percentX);
+        percentY = Mathf.Clamp01(percentY);
+        int x = Mathf.RoundToInt((gridSizeX - 1) * percentX);
+        int y = Mathf.RoundToInt((gridSizeY - 1) * percentY);
+        return grid[x,y];
     }
 
     void OnDrawGizmos(){
