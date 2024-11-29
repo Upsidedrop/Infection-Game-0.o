@@ -28,6 +28,20 @@ public class Pathfinding : MonoBehaviour
             if(currentNode == targetNode){
                 return;
             }
+            foreach(Node neighbor in grid.GetNeighbors(currentNode)){
+                if(!neighbor.walkable || closedSet.Contains(neighbor)){
+                    continue;
+                }
+            }
         }
+    }
+    int GetDistance(Node nodeA, Node nodeB){
+        int distX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
+        int distY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
+
+        if(distX < distY){
+            return distX * 14 + (distY-distX)*10;
+        }
+        return distY * 14 + (distX-distY) * 10;
     }
 }
