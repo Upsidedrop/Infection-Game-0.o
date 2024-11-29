@@ -62,12 +62,19 @@ public class NodeMap : MonoBehaviour
         return grid[x,y];
     }
 
+    public List<Node> path;
+
     void OnDrawGizmos(){
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
 
         if(grid != null){
             foreach(Node n in grid){
                 Gizmos.color = n.walkable? Color.blue : Color.red;
+                if(path != null){
+                    if(path.Contains(n)){
+                        Gizmos.color = Color.black;
+                    }
+                }
                 Gizmos.DrawSphere(n.worldPosition, nodeRadius);
             }
         }

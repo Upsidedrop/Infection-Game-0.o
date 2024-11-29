@@ -10,6 +10,7 @@ public class Node
     //In case I forger: 
     public int gCost; // Distance from start
     public int hCost; // Distance from target
+    public Node parent;
 
     public Node(bool _walkable, Vector3 _worldPosition, int _gridX, int _gridY){
         walkable = _walkable;
