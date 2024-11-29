@@ -7,10 +7,17 @@ public class NodeMap : MonoBehaviour
     public LayerMask unwalkableMask;
     public Vector2 gridWorldSize;
     public  float nodeRadius;
+    public bool onlyShowPath;
     Node[,] grid;
 
     float nodeDiameter;
     int gridSizeX, gridSizeY;
+
+    public int MaxSize{
+        get{
+            return gridSizeX * gridSizeY;
+        }
+    }
 
     void Start(){
         nodeDiameter = nodeRadius*2;
@@ -68,6 +75,18 @@ public class NodeMap : MonoBehaviour
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
 
         if(grid != null){
+            if(onlyShowPath){
+                Gizmos.color = Color.black;
+                
+                if(path != null){
+                    foreach(Node n in grid){
+                        if(path.Contains(n)){    
+                            Gizmos.DrawSphere(n.worldPosition, nodeRadius);
+                        }
+                    }
+                }
+                return;
+            }
             foreach(Node n in grid){
                 Gizmos.color = n.walkable? Color.blue : Color.red;
                 if(path != null){
