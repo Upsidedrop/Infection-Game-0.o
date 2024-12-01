@@ -2,12 +2,18 @@ using System.Collections;
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class Unit : MonoBehaviour
 {
     public Transform target;
     public float speed = 5;
     Vector3[] path;
     int targetIndex;
+    CharacterController controller;
+
+    void Awake(){
+        controller = GetComponent<CharacterController>();
+    }
 
     void Start(){
         PathRequestManager.RequestPath(transform.position, target.position, OnPathFound);
@@ -24,14 +30,14 @@ public class Unit : MonoBehaviour
         Vector3 currentWaypoint = path[0];
 
         while(true){
-            if(transform.position == currentWaypoint){
+            if(CloseEnough(new(transform.position.x, 0 ,transform.position.z), currentWaypoint, 0.2f)){
                 ++targetIndex;
                 if(targetIndex >= path.Length){
                     yield break;
                 }
                 currentWaypoint = path[targetIndex];
             }
-            transform.position = Vector3.MoveTowards(transform.position, currentWaypoint, speed* Time.deltaTime);
+            controller.Move((currentWaypoint - new Vector3(transform.position.x, 0 ,transform.position.z)).normalized * speed * Time.deltaTime);
             yield return null;
         }
     }
@@ -49,5 +55,8 @@ public class Unit : MonoBehaviour
                 }
             }
         }
+    }
+    bool CloseEnough(Vector3 a, Vector3 b, float margin){
+        return Vector3.Distance(a, b) < margin;
     }
 }

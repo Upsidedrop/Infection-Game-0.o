@@ -50,6 +50,9 @@ public class Pathfinding : MonoBehaviour
                         if(!openSet.Contains(neighbor)){
                             openSet.Add(neighbor);
                         }
+                        else{
+                            openSet.UpdateItem(neighbor);
+                        }
                     }
                 }
             }
