@@ -731,6 +731,7 @@ GameObject:
   - component: {fileID: 955634508}
   - component: {fileID: 955634509}
   - component: {fileID: 955634510}
+  - component: {fileID: 955634511}
   m_Layer: 0
   m_Name: A* Manager
   m_TagString: Untagged
@@ -770,6 +771,8 @@ MonoBehaviour:
     m_Bits: 128
   gridWorldSize: {x: 50, y: 50}
   nodeRadius: 2
+  gridSizeX: 7
+  gridSizeY: 7
 --- !u!114 &955634509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -794,6 +797,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d006f8a95bf7c2b2a55c034a50398cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &955634511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955634506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be5ac4526d9a9b6e3bf764685092b37c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placeNode: 0
+  clearNodes: 0
+  removeLastNode: 0
+  currentNodePos: {x: 10.1, y: 0, z: -2.88}
+  gizmoSize: 1
+  gizmoSpacing: 0.4
+  gridDimensions: {x: 8, y: 8}
+  worldDimensions: {x: 50, y: 50}
 --- !u!1 &1022245814
 GameObject:
   m_ObjectHideFlags: 0

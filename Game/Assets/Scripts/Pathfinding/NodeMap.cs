@@ -10,7 +10,8 @@ public class NodeMap : MonoBehaviour
     Node[,] grid;
 
     float nodeDiameter;
-    int gridSizeX, gridSizeY;
+    [HideInInspector]
+    public int gridSizeX, gridSizeY;
 
     public int MaxSize{
         get{
@@ -58,14 +59,19 @@ public class NodeMap : MonoBehaviour
         return neighbors;
     }
 
-    public Node NodeFromWorldPoint(Vector3 worldPostition){
-        float percentX = (worldPostition.x + gridWorldSize.x / 2) / gridWorldSize.x;
-        float percentY = (worldPostition.z + gridWorldSize.y / 2) / gridWorldSize.y;
+    public Node NodeFromWorldPoint(Vector3 worldPosition){
+        Vector2Int location = IndexFromWorldPoint(worldPosition, gridWorldSize, new(gridSizeX, gridSizeY));
+        return grid[location.x,location.y];
+    }
+
+    public Vector2Int IndexFromWorldPoint(Vector3 worldPosition, Vector2 worldDimensions, Vector2Int gridDimensions){
+        float percentX = (worldPosition.x + worldDimensions.x / 2) / worldDimensions.x;
+        float percentY = (worldPosition.z + worldDimensions.y / 2) / worldDimensions.y;
         percentX = Mathf.Clamp01(percentX);
         percentY = Mathf.Clamp01(percentY);
-        int x = Mathf.RoundToInt((gridSizeX - 1) * percentX);
-        int y = Mathf.RoundToInt((gridSizeY - 1) * percentY);
-        return grid[x,y];
+        int x = Mathf.RoundToInt((gridDimensions.x - 1) * percentX);
+        int y = Mathf.RoundToInt((gridDimensions.y - 1) * percentY);
+        return new(x, y);
     }
 
 }
