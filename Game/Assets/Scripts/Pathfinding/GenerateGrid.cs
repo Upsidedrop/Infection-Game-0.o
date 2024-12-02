@@ -10,7 +10,7 @@ using Unity.VisualScripting;
 public class GenerateGrid : MonoBehaviour
 {    
     NodeMap grid;
-    List<Vector3> dynamicNodes;
+    List<Vector3> dynamicNodes = new();
     public bool placeNode;
     public bool clearNodes;
     public bool removeLastNode;
@@ -19,6 +19,7 @@ public class GenerateGrid : MonoBehaviour
     public float gizmoSpacing = 0.4f;
     public Vector2Int gridDimensions = new(8, 8);
     public Vector2 worldDimensions = new(50, 50);
+    public bool writeFile;
     void OnValidate(){
         if(placeNode){
             placeNode = false;
@@ -34,6 +35,10 @@ public class GenerateGrid : MonoBehaviour
                 return;
             }
             dynamicNodes.RemoveAt(dynamicNodes.Count - 1);
+        }
+        if(writeFile){
+            writeFile = false;
+            Write();
         }
     }
     void Awake(){
@@ -71,17 +76,40 @@ public class GenerateGrid : MonoBehaviour
             }
         }
     }
-    
-    [Serializable]
-    class StoredGridMap{
-        public Node[,] nodes;
+    [SerializeField]
+    StoredGridMap map;
+    void Write(){
+        map = new();
+        map.nodeColumns = new NodeColumn[gridDimensions.x];
+        for(int i = 0; i < map.nodeColumns.Length; ++i){
+            map.nodeColumns[i] = new();
+            map.nodeColumns[i].rows = new StoredNode[gridDimensions.y];
+        }
+        foreach(Vector3 node in dynamicNodes){
+            Vector2Int gridPos = grid.IndexFromWorldPoint(node, worldDimensions, gridDimensions);
+            StoredNode index;
+            index = new();
+            index.worldPosition = new();
+            index.worldPosition = node;
+            map.nodeColumns[gridPos.x].rows[gridPos.y] = index;
+        }
+        string mapJson = JsonUtility.ToJson(map);
+        print(mapJson);
+        File.WriteAllText("Assets/Grid.json", mapJson);
     }
+}
 
-    [Serializable]
-    class StoredNode{
-        public Vector3 worldPosition;
-        public int gridX;
-        public int gridY;
-    }
+[Serializable]
+public class StoredGridMap{
+    public NodeColumn[] nodeColumns;
+}
 
+[Serializable]
+public class NodeColumn{
+    public StoredNode[] rows;
+}
+
+[Serializable]
+public class StoredNode{
+    public Vector3 worldPosition;
 }
