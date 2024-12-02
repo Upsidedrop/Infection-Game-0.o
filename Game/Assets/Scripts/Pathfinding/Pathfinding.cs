@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Pathfinding : MonoBehaviour
 {
+    public LayerMask unwalkableMask;
     PathRequestManager requestManager;
     NodeMap grid;
 
@@ -22,7 +24,7 @@ public class Pathfinding : MonoBehaviour
         
         Node startNode = grid.NodeFromWorldPoint(startPos);
         Node targetNode = grid.NodeFromWorldPoint(targetPos);
-        if(startNode.walkable && targetNode.walkable){
+        if(!Physics.CheckSphere(startNode.worldPosition, 0.01f,unwalkableMask) && !Physics.CheckSphere(targetNode.worldPosition, 0.01f,unwalkableMask)){
             Heap<Node> openSet = new Heap<Node>(grid.MaxSize);
             HashSet<Node> closedSet = new HashSet<Node>();
             openSet.Add(startNode);
@@ -37,11 +39,12 @@ public class Pathfinding : MonoBehaviour
                     break;
                 }
                 foreach(Node neighbor in grid.GetNeighbors(currentNode)){
-                    if(!neighbor.walkable || closedSet.Contains(neighbor)){
+                    if(Physics.Raycast(neighbor.worldPosition + Vector3.up, currentNode.worldPosition - neighbor.worldPosition, Vector3.Distance(neighbor.worldPosition, currentNode.worldPosition), unwalkableMask) || closedSet.Contains(neighbor)){
+                        print("safsa");
                         continue;
                     }
 
-                    int newMovementCostToNeighbor = currentNode.gCost +GetDistance(currentNode,neighbor);
+                    int newMovementCostToNeighbor = currentNode.gCost + GetDistance(currentNode,neighbor);
                     if(newMovementCostToNeighbor < neighbor.gCost  || !openSet.Contains(neighbor)){
                         neighbor.gCost = newMovementCostToNeighbor;
                         neighbor.hCost = GetDistance(neighbor, targetNode);
@@ -72,7 +75,11 @@ public class Pathfinding : MonoBehaviour
             path.Add(currentNode);
             currentNode = currentNode.parent;
         }
-        Vector3[] wayPoints = SimplifyPath(path);
+        List<Vector3> pathPositions = new();
+        foreach(Node node in path){
+            pathPositions.Add(node.worldPosition);
+        }
+        Vector3[] wayPoints = pathPositions.ToArray();
         Array.Reverse(wayPoints);
         return wayPoints;
     }
@@ -82,8 +89,9 @@ public class Pathfinding : MonoBehaviour
         Vector2 dirOld = Vector2.zero;
 
         for(int i = 1; i < path.Count; ++i){
-            Vector2 dirNew = new(path[i - 1].gridX - path[i].gridX, path[i - 1].gridY - path[i].gridY);
-            if(dirNew != dirOld){
+            Vector2 dirNew = new(path[i].gridX - path[i-1].gridX, path[i].gridY - path[i - 1].gridY);
+            print($"old: {dirOld} new: {dirNew}");
+            if(true/*dirNew != dirOld*/){
                 waypoints.Add(path[i].worldPosition);
                 dirOld = dirNew;
             }

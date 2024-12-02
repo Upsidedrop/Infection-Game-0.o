@@ -766,11 +766,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e170a0a99f6f21bbe8c7deea632ca49b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unwalkableMask:
-    serializedVersion: 2
-    m_Bits: 128
   gridWorldSize: {x: 50, y: 50}
-  nodeRadius: 2
   gridSizeX: 7
   gridSizeY: 7
 --- !u!114 &955634509
@@ -785,6 +781,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf9f217c9a8b76782b02928cdbf51ec9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unwalkableMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &955634510
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -812,86 +811,86 @@ MonoBehaviour:
   placeNode: 0
   clearNodes: 0
   removeLastNode: 0
-  currentNodePos: {x: -9.21, y: 0, z: -3.09}
+  currentNodePos: {x: 3.03, y: 0, z: 2.68}
+  showGrid: 1
   gizmoSize: 1
   gizmoSpacing: 0.4
   gridDimensions: {x: 8, y: 8}
-  worldDimensions: {x: 50, y: 50}
   writeFile: 0
   map:
     nodeColumns:
     - rows:
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
     - rows:
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
     - rows:
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: -9.21, y: 0, z: 3.13}
-      - worldPosition: {x: -9.21, y: 0, z: 9.6}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: -9.34, y: 0, z: -15.6}
+      - {x: -9.34, y: 0, z: -9.8}
+      - {x: -9.34, y: 0, z: -3.4}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
     - rows:
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: -3.45, y: 0, z: -15.6}
+      - {x: -3.5, y: 0, z: -6.75}
+      - {x: -3.5, y: 0, z: -3.4}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
     - rows:
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 2.14, y: 0, z: 3.13}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
+      - {x: 3.6, y: 0, z: -22.5}
+      - {x: 3.6, y: 0, z: -15.6}
+      - {x: 3.03, y: 0, z: -6.75}
+      - {x: 3.03, y: 0, z: -3.79}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
     - rows:
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
+      - {x: 9.47, y: 0, z: -22.5}
+      - {x: 9.47, y: 0, z: -15.54}
+      - {x: 10.9, y: 0, z: -9.59}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
     - rows:
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
     - rows:
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
-      - worldPosition: {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
 --- !u!1 &1022245814
 GameObject:
   m_ObjectHideFlags: 0

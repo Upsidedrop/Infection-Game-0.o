@@ -5,6 +5,7 @@ using UnityEngine.Assertions.Must;
 using System.Linq;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 
 [ExecuteInEditMode]
 public class GenerateGrid : MonoBehaviour
@@ -15,10 +16,10 @@ public class GenerateGrid : MonoBehaviour
     public bool clearNodes;
     public bool removeLastNode;
     public Vector3 currentNodePos;
+    public bool showGrid = true;
     public float gizmoSize = 1;
     public float gizmoSpacing = 0.4f;
     public Vector2Int gridDimensions = new(8, 8);
-    public Vector2 worldDimensions = new(50, 50);
     public bool writeFile;
     void OnValidate(){
         if(placeNode){
@@ -47,11 +48,14 @@ public class GenerateGrid : MonoBehaviour
 
     void OnDrawGizmosSelected(){
         Vector2Int[] nodeIndicies = new Vector2Int[dynamicNodes.Count];
+        for(int i = 0; i < nodeIndicies.Length; ++i){
+            nodeIndicies[i] = Vector2Int.one * -1;
+        }
         Gizmos.color = Color.green;
         List<Vector3> toDestroy = new();
         for(int i = 0; i < dynamicNodes.Count; ++i){
             Gizmos.DrawSphere(dynamicNodes[i], gizmoSize);
-            Vector2Int index = grid.IndexFromWorldPoint(-dynamicNodes[i], worldDimensions, gridDimensions);
+            Vector2Int index = grid.IndexFromWorldPoint(-dynamicNodes[i], grid.gridWorldSize, gridDimensions);
             if(nodeIndicies.Contains(index)){
                 toDestroy.Add(dynamicNodes[i]);
             }
@@ -62,12 +66,15 @@ public class GenerateGrid : MonoBehaviour
         }
         Gizmos.color = Color.gray;
         Gizmos.DrawSphere(currentNodePos, gizmoSize);
-        Vector2 nodeSize = worldDimensions / gridDimensions;
+        if(!showGrid){
+            return;   
+        }
+        Vector2 nodeSize = grid.gridWorldSize / gridDimensions;
         for(int i = 0; i < gridDimensions.x; ++i){
             for(int j = 0; j < gridDimensions.y; ++j){
                 Gizmos.color = nodeIndicies.Contains(new(i,j))? Color.green : Color.gray;
                 Gizmos.DrawWireCube(
-                    ((new Vector3(worldDimensions.x, 0, worldDimensions.y) - 
+                    ((new Vector3(grid.gridWorldSize.x, 0, grid.gridWorldSize.y) - 
                       new Vector3(nodeSize.x, 0, nodeSize.y)) / 2) + 
                       Vector3.left * i * nodeSize.x + 
                       Vector3.back * j * nodeSize.y,
@@ -83,15 +90,11 @@ public class GenerateGrid : MonoBehaviour
         map.nodeColumns = new NodeColumn[gridDimensions.x];
         for(int i = 0; i < map.nodeColumns.Length; ++i){
             map.nodeColumns[i] = new();
-            map.nodeColumns[i].rows = new StoredNode[gridDimensions.y];
+            map.nodeColumns[i].rows = new Vector3[gridDimensions.y];
         }
         foreach(Vector3 node in dynamicNodes){
-            Vector2Int gridPos = grid.IndexFromWorldPoint(node, worldDimensions, gridDimensions);
-            StoredNode index;
-            index = new();
-            index.worldPosition = new();
-            index.worldPosition = node;
-            map.nodeColumns[gridPos.x].rows[gridPos.y] = index;
+            Vector2Int gridPos = grid.IndexFromWorldPoint(node, grid.gridWorldSize, gridDimensions);
+            map.nodeColumns[gridPos.x].rows[gridPos.y] = node;
         }
         string mapJson = JsonUtility.ToJson(map);
         print(mapJson);
@@ -106,10 +109,5 @@ public class StoredGridMap{
 
 [Serializable]
 public class NodeColumn{
-    public StoredNode[] rows;
-}
-
-[Serializable]
-public class StoredNode{
-    public Vector3 worldPosition;
+    public Vector3[] rows;
 }

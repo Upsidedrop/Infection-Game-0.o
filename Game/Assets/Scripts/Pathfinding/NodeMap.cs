@@ -1,12 +1,10 @@
-using Unity.Mathematics;
 using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 
 public class NodeMap : MonoBehaviour
 {
-    public LayerMask unwalkableMask;
     public Vector2 gridWorldSize;
-    public float nodeRadius;
     Node[,] grid;
 
     float nodeDiameter;
@@ -20,22 +18,20 @@ public class NodeMap : MonoBehaviour
     }
 
     void Awake(){
-        nodeDiameter = nodeRadius*2;
-        gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
-        gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
-        CreateGrid();
+        FetchGrid();
     }
 
-    void CreateGrid(){
-        grid = new Node[gridSizeX,gridSizeY];
-        Vector3 bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
+    void FetchGrid(){
+        string file = File.ReadAllText("Assets/Grid.json");
+        StoredGridMap decompiledGrid = JsonUtility.FromJson<StoredGridMap>(file);
+        gridSizeX = decompiledGrid.nodeColumns.Length;
+        gridSizeY = decompiledGrid.nodeColumns[0].rows.Length;
+        grid = new Node[gridSizeX, gridSizeY];
 
         for(int x = 0; x < gridSizeX; ++x){
             for(int y = 0; y < gridSizeY; ++y){
-                Vector3 worldPos = bottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
-                bool walkable = !(Physics.CheckSphere(worldPos, nodeRadius,unwalkableMask));
-
-                grid[x,y] = new Node(walkable, worldPos,x,y);
+                Vector3 worldPos = decompiledGrid.nodeColumns[x].rows[y];
+                grid[x,y] = new Node(worldPos,x,y);
             }
         }
     }
@@ -65,12 +61,8 @@ public class NodeMap : MonoBehaviour
     }
 
     public Vector2Int IndexFromWorldPoint(Vector3 worldPosition, Vector2 worldDimensions, Vector2Int gridDimensions){
-        float percentX = (worldPosition.x + worldDimensions.x / 2) / worldDimensions.x;
-        float percentY = (worldPosition.z + worldDimensions.y / 2) / worldDimensions.y;
-        percentX = Mathf.Clamp01(percentX);
-        percentY = Mathf.Clamp01(percentY);
-        int x = Mathf.RoundToInt((gridDimensions.x - 1) * percentX);
-        int y = Mathf.RoundToInt((gridDimensions.y - 1) * percentY);
+        int x = Mathf.FloorToInt((worldPosition.x + worldDimensions.x / 2) * (gridDimensions.x / worldDimensions.x));
+        int y = Mathf.FloorToInt((worldPosition.z + worldDimensions.y / 2) * (gridDimensions.y / worldDimensions.y));
         return new(x, y);
     }
 
