@@ -40,7 +40,6 @@ public class Pathfinding : MonoBehaviour
                 }
                 foreach(Node neighbor in grid.GetNeighbors(currentNode)){
                     if(Physics.Raycast(neighbor.worldPosition + Vector3.up, currentNode.worldPosition - neighbor.worldPosition, Vector3.Distance(neighbor.worldPosition, currentNode.worldPosition), unwalkableMask) || closedSet.Contains(neighbor)){
-                        print("safsa");
                         continue;
                     }
 

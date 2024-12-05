@@ -5,7 +5,7 @@ using System.IO;
 public class NodeMap : MonoBehaviour
 {
     public Vector2 gridWorldSize;
-    Node[,] grid;
+    public Node[,] grid;
 
     float nodeDiameter;
     [HideInInspector]
@@ -56,13 +56,18 @@ public class NodeMap : MonoBehaviour
     }
 
     public Node NodeFromWorldPoint(Vector3 worldPosition){
-        Vector2Int location = IndexFromWorldPoint(worldPosition, gridWorldSize, new(gridSizeX, gridSizeY));
+        Vector2Int location = IndexFromWorldPoint(worldPosition);
         return grid[location.x,location.y];
     }
 
     public Vector2Int IndexFromWorldPoint(Vector3 worldPosition, Vector2 worldDimensions, Vector2Int gridDimensions){
         int x = Mathf.FloorToInt((worldPosition.x + worldDimensions.x / 2) * (gridDimensions.x / worldDimensions.x));
         int y = Mathf.FloorToInt((worldPosition.z + worldDimensions.y / 2) * (gridDimensions.y / worldDimensions.y));
+        return new(x, y);
+    }
+    public Vector2Int IndexFromWorldPoint(Vector3 worldPosition){
+        int x = Mathf.FloorToInt((worldPosition.x + gridWorldSize.x / 2) * (gridSizeX / gridWorldSize.x));
+        int y = Mathf.FloorToInt((worldPosition.z + gridWorldSize.y / 2) * (gridSizeY / gridWorldSize.y));
         return new(x, y);
     }
 
