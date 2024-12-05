@@ -1,11 +1,9 @@
 using UnityEngine;
 using System.IO;
 using System;
-using UnityEngine.Assertions.Must;
 using System.Linq;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 
 [ExecuteInEditMode]
 public class GenerateGrid : MonoBehaviour
@@ -20,6 +18,7 @@ public class GenerateGrid : MonoBehaviour
     public float gizmoSize = 1;
     public float gizmoSpacing = 0.4f;
     public Vector2Int gridDimensions = new(8, 8);
+    public bool readFile;
     public bool writeFile;
     void OnValidate(){
         if(placeNode){
@@ -41,7 +40,27 @@ public class GenerateGrid : MonoBehaviour
             writeFile = false;
             Write();
         }
+        if(readFile){
+            readFile = false;
+            FetchGrid();
+        }
     }
+
+    void FetchGrid(){
+        string file = File.ReadAllText("Assets/Grid.json");
+        StoredGridMap decompiledGrid = JsonUtility.FromJson<StoredGridMap>(file);
+        gridDimensions.x = decompiledGrid.nodeColumns.Length;
+        gridDimensions.y = decompiledGrid.nodeColumns[0].rows.Length;
+        dynamicNodes = new();
+
+        for(int x = 0; x < gridDimensions.x; ++x){
+            for(int y = 0; y < gridDimensions.y; ++y){
+                Vector3 worldPos = decompiledGrid.nodeColumns[x].rows[y];
+                dynamicNodes.Add(worldPos);
+            }
+        }
+    }
+
     void Awake(){
         grid = GetComponent<NodeMap>();
     }

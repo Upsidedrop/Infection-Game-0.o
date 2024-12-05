@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class RoosterBehavior : MonoBehaviour
 {
     public LayerMask unwalkable;
-    Vector2Int nest;
+    Vector3 nest;
     public NodeMap gridObject;
     HashSet<Vector2Int> outerMemory = new();
     HashSet<Vector2Int> totalMemory = new();
@@ -17,7 +16,7 @@ public class RoosterBehavior : MonoBehaviour
 
     void Start()
     {
-        nest = gridObject.IndexFromWorldPoint(transform.position);
+        nest = gridObject.NodeFromWorldPoint(transform.position).worldPosition; // So that the nest is on a node
 
         CheckSquare(3);
 
@@ -28,10 +27,16 @@ public class RoosterBehavior : MonoBehaviour
 
     void Update(){
         CheckSquare(3);
-        if(totalMemory.Count == gridObject.MaxSize){
-            totalMemory.Clear();
-            outerMemory.Clear();
-        }
+    }
+
+    IEnumerator ReturnToNest(){
+        PathRequestManager.RequestPath(transform.position, nest, OnPathFound);
+        yield return new WaitUntil(() => CloseEnough(new(transform.position.x, 0 ,transform.position.z), nest, 0.2f));
+        totalMemory.Clear();
+        outerMemory.Clear();
+        CheckSquare(3);
+        Vector2Int nextPos = outerMemory.ToList()[Random.Range(0, outerMemory.Count)];
+        PathRequestManager.RequestPath(transform.position, gridObject.grid[nextPos.x, nextPos.y].worldPosition, OnPathFound);
     }
 
     void AddNode(Vector2Int node){
@@ -57,13 +62,15 @@ public class RoosterBehavior : MonoBehaviour
     List<Vector2Int> CheckSides(Vector2Int node){
         List<Vector2Int> sides = new();
         foreach(Vector2Int direction in directions){
+            
             if(node.x + direction.x >= gridObject.gridSizeX || node.x + direction.x  < 0 || node.y + direction.y  >= gridObject.gridSizeY || node.y + direction.y < 0){
-                break;
+                continue;
             }
             if(!Physics.Raycast(
                 gridObject.grid[node.x, node.y].worldPosition,
                 gridObject.grid[node.x + direction.x, node.y + direction.y].worldPosition - gridObject.grid[node.x, node.y].worldPosition,
-                Vector3.Distance(gridObject.grid[node.x, node.y].worldPosition, gridObject.grid[node.x + direction.x, node.y + direction.y].worldPosition),unwalkable)){
+                Vector3.Distance(gridObject.grid[node.x, node.y].worldPosition, gridObject.grid[node.x + direction.x, node.y + direction.y].worldPosition),
+                unwalkable)){
                 sides.Add(node + direction);
             }
         }
@@ -72,7 +79,6 @@ public class RoosterBehavior : MonoBehaviour
     }
     void CheckSquare(int size){
         Vector2Int pos = gridObject.IndexFromWorldPoint(transform.position);
-        print(pos);
         for(int i = 0; i < size; ++i){
             if(pos.x + i - Mathf.FloorToInt(size/2) >= gridObject.gridSizeX || pos.x + i - Mathf.FloorToInt(size/2) < 0){
                 continue;
