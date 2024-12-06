@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class RoosterBehavior : MonoBehaviour
@@ -46,7 +45,7 @@ public class RoosterBehavior : MonoBehaviour
 
     IEnumerator ReturnToNest(){
         PathRequestManager.RequestPath(transform.position, nest, OnPathFound);
-        yield return new WaitUntil(() => CloseEnough(new(transform.position.x, 0 ,transform.position.z), nest, 0.2f));
+        yield return new WaitUntil(() => new Vector3(transform.position.x, 0 ,transform.position.z) == nest);
         totalMemory.Clear();
         outerMemory.Clear();
         CheckSquare(3);
@@ -138,22 +137,20 @@ public class RoosterBehavior : MonoBehaviour
         Vector3 currentWaypoint = path[0];
 
         while(true){
-            if(CloseEnough(new(transform.position.x, 0 ,transform.position.z), currentWaypoint, 0.2f)){
+            if(new Vector3(transform.position.x, 0 ,transform.position.z) == currentWaypoint){
                 ++targetIndex;
                 if(targetIndex >= path.Length){
                     goto FinishPath;
                 }
                 currentWaypoint = path[targetIndex];
             }
-            controller.Move((currentWaypoint - new Vector3(transform.position.x, 0 ,transform.position.z)).normalized * 5 * Time.deltaTime);
+            controller.Move(Vector3.MoveTowards(new Vector3(transform.position.x, 0 ,transform.position.z), currentWaypoint, 5 * Time.deltaTime) - transform.position);
+            //transform.rotation = Quaternion.RotateTowards(Quaternion.identity, Quaternion.FromToRotation(transform.forward, currentWaypoint - transform.position), 90 * Time.deltaTime);
             yield return null;
         }
         FinishPath:
             yield return new WaitUntil(() => currentPhase == Phase.Searching);
             Vector2Int nextPos = outerMemory.ToList()[Random.Range(0, outerMemory.Count)];
             PathRequestManager.RequestPath(transform.position, gridObject.grid[nextPos.x, nextPos.y].worldPosition, OnPathFound);
-    }
-    bool CloseEnough(Vector3 a, Vector3 b, float margin){
-        return Vector3.Distance(a, b) < margin;
     }
 }
