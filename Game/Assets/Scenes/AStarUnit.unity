@@ -730,6 +730,7 @@ MonoBehaviour:
   gizmoSize: 0.41
   gizmoSpacing: 0.5
   gridDimensions: {x: 8, y: 8}
+  readFile: 0
   writeFile: 0
   map:
     nodeColumns:
@@ -1684,7 +1685,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4001590838159191415, guid: 8132258d88a662d89888b56051930a82, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.07
+      value: -12.2
       objectReference: {fileID: 0}
     - target: {fileID: 4001590838159191415, guid: 8132258d88a662d89888b56051930a82, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1692,7 +1693,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4001590838159191415, guid: 8132258d88a662d89888b56051930a82, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.14
+      value: -14.1
       objectReference: {fileID: 0}
     - target: {fileID: 4001590838159191415, guid: 8132258d88a662d89888b56051930a82, type: 3}
       propertyPath: m_LocalRotation.w

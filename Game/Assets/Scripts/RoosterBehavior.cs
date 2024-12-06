@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RoosterBehavior : MonoBehaviour
@@ -12,7 +13,14 @@ public class RoosterBehavior : MonoBehaviour
     HashSet<Vector2Int> totalMemory = new();
     public CharacterController controller;
     Vector3[] path;
+    Phase currentPhase = Phase.Searching;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    enum Phase{
+        Searching,
+        Returning
+    }
 
     void Start()
     {
@@ -26,7 +34,14 @@ public class RoosterBehavior : MonoBehaviour
     }
 
     void Update(){
-        CheckSquare(3);
+        if(currentPhase == Phase.Searching){
+            if(outerMemory.Count <= 0){
+                StartCoroutine("ReturnToNest");
+                currentPhase = Phase.Returning;
+                return;
+            }
+            CheckSquare(3);
+        }
     }
 
     IEnumerator ReturnToNest(){
@@ -35,8 +50,7 @@ public class RoosterBehavior : MonoBehaviour
         totalMemory.Clear();
         outerMemory.Clear();
         CheckSquare(3);
-        Vector2Int nextPos = outerMemory.ToList()[Random.Range(0, outerMemory.Count)];
-        PathRequestManager.RequestPath(transform.position, gridObject.grid[nextPos.x, nextPos.y].worldPosition, OnPathFound);
+        currentPhase = Phase.Searching;
     }
 
     void AddNode(Vector2Int node){
@@ -135,6 +149,7 @@ public class RoosterBehavior : MonoBehaviour
             yield return null;
         }
         FinishPath:
+            yield return new WaitUntil(() => currentPhase == Phase.Searching);
             Vector2Int nextPos = outerMemory.ToList()[Random.Range(0, outerMemory.Count)];
             PathRequestManager.RequestPath(transform.position, gridObject.grid[nextPos.x, nextPos.y].worldPosition, OnPathFound);
     }
