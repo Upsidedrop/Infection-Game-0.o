@@ -45,7 +45,7 @@ public class RoosterBehavior : MonoBehaviour
 
     IEnumerator ReturnToNest(){
         PathRequestManager.RequestPath(transform.position, nest, OnPathFound);
-        yield return new WaitUntil(() => new Vector3(transform.position.x, 0 ,transform.position.z) == nest);
+        yield return new WaitUntil(() => (nest - new Vector3(transform.position.x, 0 ,transform.position.z)).magnitude < 0.1f);
         totalMemory.Clear();
         outerMemory.Clear();
         CheckSquare(3);
@@ -137,7 +137,7 @@ public class RoosterBehavior : MonoBehaviour
         Vector3 currentWaypoint = path[0];
 
         while(true){
-            if(new Vector3(transform.position.x, 0 ,transform.position.z) == currentWaypoint){
+            if((currentWaypoint - new Vector3(transform.position.x, 0 ,transform.position.z)).magnitude < 0.1f){
                 ++targetIndex;
                 if(targetIndex >= path.Length){
                     goto FinishPath;
@@ -145,7 +145,9 @@ public class RoosterBehavior : MonoBehaviour
                 currentWaypoint = path[targetIndex];
             }
             controller.Move(Vector3.MoveTowards(new Vector3(transform.position.x, 0 ,transform.position.z), currentWaypoint, 5 * Time.deltaTime) - transform.position);
-            //transform.rotation = Quaternion.RotateTowards(Quaternion.identity, Quaternion.FromToRotation(transform.forward, currentWaypoint - transform.position), 90 * Time.deltaTime);
+            Vector3 targetDir = currentWaypoint - new Vector3(transform.position.x, 0, transform.position.z);
+            Vector3 turnToPos = Vector3.RotateTowards(transform.forward, targetDir, Mathf.PI * Time.deltaTime, 0);
+            transform.rotation = Quaternion.LookRotation(turnToPos);
             yield return null;
         }
         FinishPath:
