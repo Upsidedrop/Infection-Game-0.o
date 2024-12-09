@@ -7,7 +7,6 @@ public class NodeMap : MonoBehaviour
     public Vector2 gridWorldSize;
     public Node[,] grid;
 
-    float nodeDiameter;
     [HideInInspector]
     public int gridSizeX, gridSizeY;
 

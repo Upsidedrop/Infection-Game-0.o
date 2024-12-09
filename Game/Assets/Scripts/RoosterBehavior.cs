@@ -25,7 +25,7 @@ public class RoosterBehavior : MonoBehaviour
     {
         nest = gridObject.NodeFromWorldPoint(transform.position).worldPosition; // So that the nest is on a node
 
-        CheckSquare(3);
+        CheckCone(5);
 
         
         Vector2Int nextPos = outerMemory.ToList()[Random.Range(0, outerMemory.Count)];
@@ -39,7 +39,7 @@ public class RoosterBehavior : MonoBehaviour
                 currentPhase = Phase.Returning;
                 return;
             }
-            CheckSquare(3);
+            CheckCone(5);
         }
     }
 
@@ -48,7 +48,7 @@ public class RoosterBehavior : MonoBehaviour
         yield return new WaitUntil(() => (nest - new Vector3(transform.position.x, 0 ,transform.position.z)).magnitude < 0.1f);
         totalMemory.Clear();
         outerMemory.Clear();
-        CheckSquare(3);
+        CheckCone(5);
         currentPhase = Phase.Searching;
     }
 
@@ -101,6 +101,23 @@ public class RoosterBehavior : MonoBehaviour
                    continue;
                 }
                 Vector2Int index = pos + new Vector2Int(i,j) - Vector2Int.one * Mathf.FloorToInt(size/2);
+                if(!Physics.Raycast(transform.position, gridObject.grid[index.x, index.y].worldPosition - transform.position, Vector3.Distance(gridObject.grid[index.x, index.y].worldPosition,transform.position),unwalkable)){
+                    AddNode(index);
+                }
+            }
+        }
+    }
+    void CheckCone(int size){
+        Vector2 relativeGridSize = gridObject.gridWorldSize / new Vector2(gridObject.gridSizeX, gridObject.gridSizeY);
+        for(int i = 0; i < size; ++i){
+            int width = i*2 + 1;
+            Vector3 distance = i * transform.forward *relativeGridSize.x;
+            for(int j = 0; j < width; ++j){
+                Vector3 offset = transform.right * (j - i) *relativeGridSize.x;
+                Vector2Int index = gridObject.IndexFromWorldPoint(transform.position + distance + offset);
+                if(index.x >= gridObject.gridSizeX || index.x < 0 || index.y >= gridObject.gridSizeY || index.y < 0){
+                    continue;
+                }
                 if(!Physics.Raycast(transform.position, gridObject.grid[index.x, index.y].worldPosition - transform.position, Vector3.Distance(gridObject.grid[index.x, index.y].worldPosition,transform.position),unwalkable)){
                     AddNode(index);
                 }
