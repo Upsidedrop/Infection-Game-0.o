@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class RoosterBehavior : MonoBehaviour
 {
+    public Transform player;
     public LayerMask unwalkable;
     Vector3 nest;
     public NodeMap gridObject;
@@ -25,7 +26,7 @@ public class RoosterBehavior : MonoBehaviour
     {
         nest = gridObject.NodeFromWorldPoint(transform.position).worldPosition; // So that the nest is on a node
 
-        CheckCone(5);
+        CheckSquare(5);
 
         
         Vector2Int nextPos = outerMemory.ToList()[Random.Range(0, outerMemory.Count)];
@@ -33,14 +34,33 @@ public class RoosterBehavior : MonoBehaviour
     }
 
     void Update(){
+        if(CheckForPlayer()){
+            print("asjhfaskjfhsakjfhwk");
+        }
         if(currentPhase == Phase.Searching){
             if(outerMemory.Count <= 0){
                 StartCoroutine("ReturnToNest");
                 currentPhase = Phase.Returning;
                 return;
             }
-            CheckCone(5);
+            CheckSquare(5);
         }
+    }
+
+    bool CheckForPlayer(){
+        if(Physics.Raycast(transform.position, player.position - transform.position, Vector3.Distance(transform.position, player.position),unwalkable)){
+            return false;
+        }
+
+        float angle = Vector3.Angle(transform.forward, player.position - transform.position);
+        print(angle);
+
+        //average rooster fov 
+        if(angle > 150){
+            return false;
+        }
+
+        return true;
     }
 
     IEnumerator ReturnToNest(){
@@ -48,7 +68,7 @@ public class RoosterBehavior : MonoBehaviour
         yield return new WaitUntil(() => (nest - new Vector3(transform.position.x, 0 ,transform.position.z)).magnitude < 0.1f);
         totalMemory.Clear();
         outerMemory.Clear();
-        CheckCone(5);
+        CheckSquare(5);
         currentPhase = Phase.Searching;
     }
 
@@ -107,6 +127,7 @@ public class RoosterBehavior : MonoBehaviour
             }
         }
     }
+    /* Not actually realistic for a chicken ;-; why they gotta be prey animals...
     void CheckCone(int size){
         Vector2 relativeGridSize = gridObject.gridWorldSize / new Vector2(gridObject.gridSizeX, gridObject.gridSizeY);
         for(int i = 0; i < size; ++i){
@@ -123,7 +144,7 @@ public class RoosterBehavior : MonoBehaviour
                 }
             }
         }
-    }
+    }*/
     void OnDrawGizmosSelected(){
         if(gridObject.grid == null){
             return;
