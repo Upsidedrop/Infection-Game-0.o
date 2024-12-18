@@ -19,7 +19,8 @@ public class RoosterBehavior : MonoBehaviour
 
     enum Phase{
         Searching,
-        Returning
+        Returning,
+        Provoked
     }
 
     void Start()
@@ -34,8 +35,10 @@ public class RoosterBehavior : MonoBehaviour
     }
 
     void Update(){
-        if(CheckForPlayer()){
-            print("asjhfaskjfhsakjfhwk");
+        if(currentPhase == Phase.Searching && CheckForPlayer()){
+            currentPhase = Phase.Provoked;
+            StopCoroutine("FollowPath");
+            StartCoroutine("ProvokeBehavior");
         }
         if(currentPhase == Phase.Searching){
             if(outerMemory.Count <= 0){
@@ -45,6 +48,16 @@ public class RoosterBehavior : MonoBehaviour
             }
             CheckSquare(5);
         }
+    }
+
+    IEnumerator ProvokeBehavior(){
+            Vector3 targetDir = player.position - new Vector3(transform.position.x, 0, transform.position.z);
+            Vector3 turnToPos = Vector3.RotateTowards(transform.forward, targetDir, Mathf.PI * Time.deltaTime, 0);
+            transform.rotation = Quaternion.LookRotation(turnToPos);
+        
+        
+        yield return null;
+        StartCoroutine("ProvokeBehavior");
     }
 
     bool CheckForPlayer(){
