@@ -16,12 +16,15 @@ public class InventoryManager : MonoBehaviour
     private void Start()
     {
         changeItem = InputSystem.actions.FindAction("Change Item");
-        useItem = InputSystem.actions.FindAction("Use");
         changeItem.performed += context =>
         {
             currentIndex = (currentIndex + (int)context.ReadValue<float>() + 3) % 3;
             UpdateIndicator();
         };
+        if(ItemFunctions == null){
+            return;
+        }
+        useItem = InputSystem.actions.FindAction("Use");
         useItem.performed += context =>
         {
             ItemFunctions.UseItem(inventory[currentIndex]);

@@ -14,6 +14,8 @@ public class RoosterBehavior : MonoBehaviour
     public CharacterController controller;
     Vector3[] path;
     Phase currentPhase = Phase.Searching;
+    float anger;
+    bool beingObserved;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
@@ -36,6 +38,7 @@ public class RoosterBehavior : MonoBehaviour
 
     void Update(){
         if(currentPhase == Phase.Searching && CheckForPlayer()){
+            anger = 15;
             currentPhase = Phase.Provoked;
             StopCoroutine("FollowPath");
             StartCoroutine("ProvokeBehavior");
@@ -51,11 +54,22 @@ public class RoosterBehavior : MonoBehaviour
     }
 
     IEnumerator ProvokeBehavior(){
-            Vector3 targetDir = player.position - new Vector3(transform.position.x, 0, transform.position.z);
-            Vector3 turnToPos = Vector3.RotateTowards(transform.forward, targetDir, Mathf.PI * Time.deltaTime, 0);
-            transform.rotation = Quaternion.LookRotation(turnToPos);
-        
-        
+        Vector3 targetDir = new Vector3(player.position.x, 0, player.position.z) - new Vector3(transform.position.x, 0, transform.position.z);
+        Vector3 turnToPos = Vector3.RotateTowards(transform.forward, targetDir, Mathf.PI * Time.deltaTime, 0);
+        transform.rotation = Quaternion.LookRotation(turnToPos);
+        if(beingObserved){
+            anger += Time.deltaTime;
+        }
+        else{
+            anger -= Time.deltaTime;
+        }
+        if(anger > 20){
+            //Start attacking
+            yield break;
+        }
+        if(anger == 0){
+
+        }
         yield return null;
         StartCoroutine("ProvokeBehavior");
     }
